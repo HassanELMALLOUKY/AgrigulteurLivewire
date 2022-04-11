@@ -21,10 +21,6 @@ class LivewireComponent extends Component
         $this->question2=Parcelle::where("Par_Superficie",">",500)->get();
         $this->question3=Parcelle::where("Par_Lieu","Arith","and")->whereBetween("Par_Superficie",[200,500])->get();
         $this->question4=Parcelle::join('agriculteurs', 'parcelles.agriculteur_id', '=', 'agriculteurs.id')->get(['parcelles.*','agriculteurs.Agr_Nom']);
-        /*$this->question5=Intervention::join('parcelles', 'interventions.Int_Par_Id', '=', 'parcelles.id')
-            ->join('employes', 'interventions.Int_Emp_Nss', '=', 'employes.Emp_Nss')
-            ->get(['parcelles.Par_Nom','interventions.*','employes.Emp_Nom']);*/
-        //$this->question5=Intervention::whereBetween("Int_Debut",[2011-11-07,2012-02-9])->get();
         $from = date('2011-11-07');
         $to = date('2012-02-9');
         $this->question5=Intervention::whereBetween("Int_Debut",[$from,$to])->get();
@@ -33,6 +29,14 @@ class LivewireComponent extends Component
         $this->question7=Intervention::join('parcelles', 'interventions.Int_Par_Id', '=', 'parcelles.id')
             ->join('employes', 'interventions.Int_Emp_Nss', '=', 'employes.Emp_Nss')
             ->get(['parcelles.Par_Nom','employes.Emp_Nom','interventions.*']);
+        $this->question8 = Intervention::join('employes', 'interventions.Int_Emp_Nss', '=', 'employes.Emp_Nss')
+            ->select('employes.Emp_Nss','interventions.*')->where("employes.Emp_Nom","Pernet")->get();
+
+        $this->question9 = Parcelle::sum("Par_Superficie");
+
+        $this->question10 =  Parcelle::select('Par_Nom')->orderBy('Par_Superficie', 'DESC')->first();
+
+        $this->question11 = Parcelle::select('Par_Nom')->orderBy('Par_Superficie', 'ASC')->first();
         return view('livewire.livewire-component',['question1'=>$this->question1,
             'question2'=>$this->question2,
             'question3'=>$this->question3,
@@ -40,6 +44,10 @@ class LivewireComponent extends Component
             'question5'=>$this->question5,
             'question6'=>$this->question6,
             'question7'=>$this->question7,
+            'question8'=>$this->question8,
+            'question9'=>$this->question9,
+            'question10'=>$this->question10,
+            'question11'=>$this->question11,
             ]);
     }
 }
